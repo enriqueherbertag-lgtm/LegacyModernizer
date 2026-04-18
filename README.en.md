@@ -5,135 +5,121 @@
 [![Shadow Mode](https://img.shields.io/badge/Validación-Shadow%20Mode-blue)](./docs/shadow_mode.md)
 [![Cláusula de Control Humano](https://img.shields.io/badge/Control%20Humano-No%20Caja%20Negra-red)](./docs/LEGACYMODERNIZER.md)
 
-# LegacyModernizer: COBOL Modernization Protocol for Banks
+# LegacyModernizer: Secure COBOL Modernization Protocol for Banks
 
-**A system that learns COBOL in real time, translates to modern languages (Python/Go), and validates in shadow mode, all within the bank's intranet.**
+**A low-risk protocol to modernize legacy COBOL systems into modern languages (Python/Go), using local AI, business rule extraction, and shadow mode validation — all running inside the bank's intranet.**
 
-This project is not commercial software. It is a **working protocol** that combines:
-- Small Language Models (SLMs) specifically trained for COBOL.
-- A pipeline for extraction, translation, validation, and switchover.
-- A security system based on single-use keys and a visitor timer.
-- A hot modernization methodology (no mainframe shutdown).
+This is not a ready-to-use commercial product. It is a **working protocol** designed for banks that need to migrate their critical systems without stopping operations or taking unacceptable risks.
 
-**Philosophy:** The bank never stops. Code is translated in parallel. Risk is mitigated with shadow mode.
+**Philosophy:** The bank never stops. Modernization happens in parallel. Risk is controlled with shadow mode and human supervision.
 
 ---
 
-## ⚠️ The problem it solves
+## The Problem It Solves
 
 | Problem | Consequence |
-|:---|:---|
-| COBOL code is decades old, undocumented, ownerless. | No one really knows how it works. |
-| Veteran programmers retire. | Knowledge is lost. |
-| Migrating to modern languages is expensive and risky. | Banks postpone migration until it's too late. |
-| Commercial tools translate poorly (spaghetti code). | The result is worse than the original. |
+|---------|-------------|
+| Over 220 billion lines of COBOL are still in production worldwide | Critical systems depend on old and poorly documented code |
+| The average COBOL programmer is ~58 years old and ~10% retire each year | Critical institutional knowledge is being lost |
+| "Big bang" migrations fail in 70-80% of cases | Million-dollar costs and major service disruptions |
+| Traditional automated tools often produce hard-to-maintain code | The final result is frequently worse than the original system |
 
-**Our solution:** A protocol that learns from COBOL while it runs, translates to clean code, and validates every transaction before switching over.
-
----
-
-## 🧠 General architecture
-
-[Mainframe COBOL] -> [Proxy/Sniffer] -> [Rule Extractor] -> [Translator to Python/Go] -> [Shadow Mode] -> [Gradual Switchover]
-
-(Real-time Backup)   (Validated Rules)     (Generated Code)       (Migrated Module)
-
-**All components run within the bank's intranet, with no internet access.**
+**Our Solution:** An incremental protocol that combines local AI analysis, business rule extraction, assisted translation, and shadow mode validation, enabling a safe and gradual switch.
 
 ---
 
-## 📦 System components
+## High-Level Architecture
 
-### 1. Local AI models (no internet)
+Mainframe COBOL → Proxy/Sniffer → Rule Extractor → Assisted Translator (Python/Go) → Shadow Mode → Gradual Switch
 
-| Model | Function | Size | Training |
-|:---|:---|:---|:---|
-| `cobol-bert` | Extract business rules, dependencies, data flows. | 110M params | Fine-tuned from CodeBERT with labeled COBOL code. |
-| `cobol2py` | Translate COBOL statements to Python/Go. | 350M params | Fine-tuned from CodeT5 with (COBOL, Python) pairs. |
-| `code-llama-7b` (quantized) | Validate output equivalence in shadow mode. | 7B params (4-bit) | Quantized to run on CPU. |
 
-**Models are trained outside the bank (with public data) and installed locally on their servers.**
+**All processes run exclusively inside the bank's intranet**, with no internet connection.
 
-### 2. Modernization pipeline (8 phases)
+---
 
-| Phase | Name | What it does | Automation |
-|:---|:---|:---|:---|
-| 0 | Preparation | Install models and environment on the bank's servers. | DevOps + You |
-| 1 | Initial scan | Analyze all of the bank's COBOL code. | Automatic |
-| 2 | Rule extraction | Generate a dependency graph and business rules. | Automatic |
-| 3 | Human validation | Senior programmer reviews and corrects extracted rules. | Human (dashboard) |
-| 4 | Automatic translation | Generate Python/Go code from validated rules. | Automatic |
-| 5 | Shadow mode | Run new code in parallel, compare outputs. | Automatic |
-| 6 | Human correction | Review discrepancies, correct code or model. | Human + Automatic |
-| 7 | Switchover | Replace COBOL with new code (gradual). | Bank architect |
-| 8 | Continuous maintenance | Repeat cycle for new modules or changes in COBOL. | Automatic + Human |
+## Main Components
 
-### 3. Shadow mode (continuous validation)
+### 1. Local AI Models (Offline)
 
-Real transaction -> [Original COBOL] -> COBOL_Output
-                -> [Generated Code] -> Python_Output
-                                  -> [Comparator] -> Match?
-                                                     Yes: Log success
-                                                     No: Log error + save inputs/outputs
+| Model                        | Main Function                                | Approximate Size     | Notes |
+|------------------------------|----------------------------------------------|----------------------|-------|
+| `cobol-analyzer`             | Business rule and dependency extraction      | 110-350M parameters  | Fine-tuned on COBOL code |
+| `cobol2modern`               | Assisted translation to Python/Go            | 350M-7B parameters   | Quantized for local CPU/GPU |
+| Equivalence Validator        | Output comparison in shadow mode             | Local LLMs           | Focus on accuracy |
 
-**Shadow mode runs in parallel with the live system, without affecting production.**
+Models are prepared outside the bank and installed locally.
 
-### 4. Real-time backup
+### 2. Modernization Pipeline
 
-- Every transaction passing through the mainframe is copied to a modern database (PostgreSQL, Kafka, etc.).
-- If the mainframe fails, data is not lost.
-- The backup is **read-only** (does not write to the mainframe).
+| Phase | Name                      | Description                                              | Responsible |
+|-------|---------------------------|----------------------------------------------------------|-------------|
+| 0     | Preparation               | Install models and secure environment                    | DevOps + Bank Team |
+| 1     | Scan & Inventory          | Analyze all COBOL codebase                               | Automatic |
+| 2     | Rule Extraction           | Generate dependency graph and business rules             | Automatic + AI |
+| 3     | Human Validation          | Review by veteran programmers                            | Human (dashboard) |
+| 4     | Assisted Translation      | Generate clean modern code                               | Automatic + AI |
+| 5     | Shadow Mode               | Parallel execution and output comparison                 | Automatic |
+| 6     | Correction & Iteration    | Fix discrepancies                                        | Human + AI |
+| 7     | Gradual Switch            | Module-by-module replacement                             | Bank Architect |
+| 8     | Continuous Maintenance    | Monitor and update migrated modules                      | Automatic + Human |
 
-### 5. Security: Access protocol for external technicians
+### 3. Shadow Mode (Parallel Validation)
+
+Real transaction → Original COBOL → COBOL Output  
+→ Modern Code → Python/Go Output  
+→ Comparator → Do the outputs match?
+
+- Match → Log success  
+- No match → Log error + save input/output for review
+
+**Shadow mode does not affect production.**
+
+### 4. Real-time Backup
+- Critical transactions are copied to a modern database (PostgreSQL + Kafka).
+- Protects data in case of mainframe failure.
+- Read-only backup.
+
+### 5. Security Protocol for External Technicians
 
 | Step | Action |
-|:---|:---|
-| 1 | Technician arrives at the bank. |
-| 2 | Identifies themselves (ID, credentials, code). |
-| 3 | Authorization is confirmed against the external personnel list. |
-| 4 | Visitor timer is activated (start time). |
-| 5 | A sealed envelope with admin keys is handed over. |
-| 6 | Technician works (only during authorized hours). |
-| 7 | Upon finishing, the timer deactivates and keys expire. |
-| 8 | The next day, the process repeats with a new envelope. |
-
-**The technician never has access outside their shift. The bank never loses control.**
+|------|--------|
+| 1    | Technician arrives and identifies |
+| 2    | Authorization is verified |
+| 3    | Visitor timer is activated |
+| 4    | Sealed envelope with daily admin key is delivered |
+| 5    | Work is performed only during authorized hours |
+| 6    | Timer expires and key becomes invalid at end of day |
 
 ---
 
-## 🛠️ Technical implementation (summary)
+## Recommended Infrastructure
 
-### Bank requirements (infrastructure)
+| Resource         | Specification                              | Purpose |
+|------------------|--------------------------------------------|---------|
+| Servers          | 2-4 servers (16+ cores, 64-128 GB RAM)     | Models and pipeline |
+| Storage          | 1-2 TB SSD NVMe                            | Code, models and logs |
+| Network          | Bank intranet (isolated)                   | All operations |
+| GPU (optional)   | 1× NVIDIA T4 or equivalent                 | Accelerate validation |
 
-| Resource | Specification | Use |
-|:---|:---|:---|
-| Servers (2-4) | Modern CPUs (16+ cores), 64-128 GB RAM | Run models and pipeline |
-| Storage | 1-2 TB SSD | COBOL code, models, logs |
-| Network | Bank intranet | Access to code and test transactions |
-| Optional (but recommended) | 1 GPU (NVIDIA T4 or similar) | Accelerate shadow mode |
+---
 
-### Installation (one-time)
+## License
 
-Copy models to servers (no internet)
-scp ./cobol-bert-local user@server:/bank/models/
-scp ./cobol2py-local user@server:/bank/models/
-scp ./codellama-7b.Q4_K_M.gguf user@server:/bank/models/
+Copyright © 2026 Enrique Aguayo. All rights reserved.
 
-Install dependencies (no internet, using local packages)
-pip install --no-index --find-links ./offline-packages transformers torch
+**Allowed:** Non-commercial use for educational, research, or internal pilot purposes.
 
-Configure access to COBOL repository
-./setup.sh --cobol-path /bank/cobol/legacy --output /bank/output
+**Prohibited without express written permission:** Commercial use, production deployment, or distribution of modified versions.
 
-text
+For commercial licenses, technical support, or bank pilots:  
+**Contact:** eaguayo@migst.cl
 
-### Daily use (automatic)
-Nightly scan (cron job)
-0 2 * * * /bank/scripts/scanner.sh --incremental
+---
 
-Continuous shadow mode (service)
-systemctl start shadow-mode.service
+## Author
 
-Human validation dashboard (internal access)
-https://bank-intranet/legacy-modernizer/dashboard
+**Enrique Aguayo H.**  
+Mackiber Labs  
+Contact: eaguayo@migst.cl
 
+*Documentation assisted by DeepSeek (AI).*
