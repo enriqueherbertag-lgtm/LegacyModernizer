@@ -1,6 +1,9 @@
-[![License](https://img.shields.io/badge/License-Copyright%20%28c%29%202026%20Enrique%20Aguayo-red)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Concept%20under%20design-yellow)](https://github.com/enriqueherbertag-lgtm/LegacyModernizer)
-[![AI Assistance](https://img.shields.io/badge/AI%20Assistance-DeepSeek-brightgreen)](https://deepseek.com)
+[![Licencia](https://img.shields.io/badge/Licencia-Copyright%20%28c%29%202026%20Enrique%20Aguayo-red)](LICENSE)
+[![Estado](https://img.shields.io/badge/Estado-Concepto%20en%20diseño-yellow)](https://github.com/enriqueherbertag-lgtm/LegacyModernizer)
+[![Asistencia IA](https://img.shields.io/badge/Asistencia%20IA-DeepSeek-brightgreen)](https://deepseek.com)
+[![Seguridad](https://img.shields.io/badge/Seguridad-Acceso%20y%20Claves-blue)](./docs/seguridad.md)
+[![Shadow Mode](https://img.shields.io/badge/Validación-Shadow%20Mode-blue)](./docs/shadow_mode.md)
+[![Cláusula de Control Humano](https://img.shields.io/badge/Control%20Humano-No%20Caja%20Negra-red)](./docs/LEGACYMODERNIZER.md)
 
 # LegacyModernizer: COBOL Modernization Protocol for Banks
 
