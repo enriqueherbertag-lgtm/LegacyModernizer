@@ -9,17 +9,28 @@ Permite ejecutar el código moderno (Python/Go) **en paralelo** con el sistema C
 
 ## Diagrama del Flujo
 
-```mermaid
-flowchart LR
-    A[Transacción Real] --> B[COBOL Original]
-    A --> C[Código Moderno Python-Go]
-    B --> D[Salida COBOL]
-    C --> E[Salida Python-Go]
-    D & E --> F[Comparador]
-    F --> G[¿Coinciden?]
-    G -->|Sí| H[Registrar Éxito]
-    G -->|No| I[Registrar Error + Guardar Datos]
-    I --> J[Alertar al Encargado]
+                              Transacción Real
+                                    ↓
+                    ┌───────────────────────────────┐
+           COBOL Original                  Código Moderno (Python/Go)
+                    │                               │
+                    ▼                               ▼
+              Salida COBOL                   Salida Python/Go
+                    │                               │
+                    └──────────────┬────────────────┘
+                                   ▼
+                               Comparador
+                                   │
+                       ¿Los resultados coinciden?
+                              /          
+                      Sí            No
+                      │             │
+              Registrar Éxito   Registrar Error
+                 + Guardar input y salidas
+                              │
+                     Alertar al Encargado
+
+
 
 
 Pasos detallados:Una transacción real llega al sistema.
