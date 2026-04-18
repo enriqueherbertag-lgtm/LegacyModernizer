@@ -3,7 +3,7 @@
 [![Asistencia IA](https://img.shields.io/badge/Asistencia%20IA-DeepSeek-brightgreen)](https://deepseek.com)
 [![Seguridad](https://img.shields.io/badge/Seguridad-Acceso%20y%20Claves-blue)](./docs/seguridad.md)
 [![Shadow Mode](https://img.shields.io/badge/Validación-Shadow%20Mode-blue)](./docs/shadow_mode.md)
-[![Cláusula de Control Humano](https://img.shields.io/badge/Control%20Humano-No%20Caja%20Negra-red)](./LEGACYMODERNIZER.md)
+[![Cláusula de Control Humano](https://img.shields.io/badge/Control%20Humano-No%20Caja%20Negra-red)](./docs/LEGACYMODERNIZER.md)
 
 # LegacyModernizer: Protocolo de modernización de COBOL en bancos
 
