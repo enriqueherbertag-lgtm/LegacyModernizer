@@ -61,7 +61,7 @@ def shadow_mode(input_data: dict, cobol_function, modern_function):
         log_error(input_data, str(e))
         alert_engineer(f"Error en shadow mode: {e}")
         return False
-
+end
 
 ## Requisitos Técnicos
 
