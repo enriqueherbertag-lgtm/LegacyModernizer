@@ -12,7 +12,9 @@ Su objetivo principal es **garantizar que el nuevo código sea funcionalmente id
 ## Flujo de Funcionamiento
 
 ```mermaid flowchart LR
+ flowchart LR
     A [Transacción Real] --> B[COBOL Original]
+    ...
     A --> C[Código Moderno Python/Go]
     B --> D[Salida COBOL]
     C --> E[Salida Python/Go]
