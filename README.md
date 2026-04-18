@@ -1,6 +1,9 @@
 [![Licencia](https://img.shields.io/badge/Licencia-Copyright%20%28c%29%202026%20Enrique%20Aguayo-red)](LICENSE)
 [![Estado](https://img.shields.io/badge/Estado-Concepto%20en%20diseño-yellow)](https://github.com/enriqueherbertag-lgtm/LegacyModernizer)
 [![Asistencia IA](https://img.shields.io/badge/Asistencia%20IA-DeepSeek-brightgreen)](https://deepseek.com)
+[![Seguridad](https://img.shields.io/badge/Seguridad-Acceso%20y%20Claves-blue)](./docs/seguridad.md)
+[![Shadow Mode](https://img.shields.io/badge/Validación-Shadow%20Mode-blue)](./docs/shadow_mode.md)
+
 
 # LegacyModernizer: Protocolo de modernización de COBOL en bancos
 
