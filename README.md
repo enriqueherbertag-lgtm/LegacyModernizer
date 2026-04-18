@@ -5,169 +5,119 @@
 [![Shadow Mode](https://img.shields.io/badge/Validación-Shadow%20Mode-blue)](./docs/shadow_mode.md)
 [![Cláusula de Control Humano](https://img.shields.io/badge/Control%20Humano-No%20Caja%20Negra-red)](./docs/LEGACYMODERNIZER.md)
 
-# LegacyModernizer: Protocolo de modernización de COBOL en bancos
+# LegacyModernizer: Protocolo de modernización segura de sistemas COBOL en banca
 
-**Un sistema que aprende COBOL en tiempo real, traduce a lenguajes modernos (Python/Go), y valida en shadow mode, todo dentro de la intranet del banco.**
+**Un protocolo de bajo riesgo para modernizar sistemas legacy COBOL hacia lenguajes modernos (Python/Go), usando IA local, extracción de reglas de negocio y validación en shadow mode — todo dentro de la intranet del banco.**
 
-Este proyecto no es un software comercial. Es un **protocolo de trabajo** que combina:
-- Modelos de lenguaje pequeños (SLMs) entrenados específicamente para COBOL.
-- Un pipeline de extracción, traducción, validación y conmutación.
-- Un sistema de seguridad basado en claves de un solo uso y temporizador visitante.
-- Una metodología de modernización en caliente (sin apagar el mainframe).
+Este no es un producto comercial listo para usar. Es un **protocolo de trabajo** diseñado para bancos que necesitan migrar sus sistemas críticos sin detener operaciones ni asumir riesgos inaceptables.
 
-**Filosofía:** El banco no para. El código se traduce en paralelo. El riesgo se mitiga con shadow mode.
+**Filosofía:** El banco nunca se detiene. La modernización ocurre en paralelo. El riesgo se controla con shadow mode y validación humana.
 
 ---
 
-##  El problema que resuelve
+## El problema que resuelve
 
 | Problema | Consecuencia |
-|:---|:---|
-| El código COBOL tiene décadas, sin documentación, sin dueño. | Nadie sabe cómo funciona realmente. |
-| Los programadores veteranos se jubilan. | El conocimiento se pierde. |
-| Migrar a lenguajes modernos es caro y arriesgado. | Los bancos posponen la migración hasta que es tarde. |
-| Las herramientas comerciales traducen mal (código espagueti). | El resultado es peor que el original. |
+|----------|-------------|
+| Más de 220 mil millones de líneas de COBOL siguen en producción mundial | Sistemas críticos dependen de código antiguo y poco documentado |
+| El programador promedio de COBOL tiene ~58 años y ~10% se jubila cada año | Pérdida acelerada de conocimiento institucional |
+| Las migraciones "big bang" fallan entre 70% y 80% de los casos | Costos millonarios y disrupción en servicios (ej. casos reales en Europa) |
+| Herramientas automáticas tradicionales generan código difícil de mantener | Resultado final muchas veces peor que el sistema original |
 
-**Nuestra solución:** Un protocolo que aprende del COBOL mientras opera, traduce a código limpio, y valida cada transacción antes de conmutar.
-
----
-
-##  Arquitectura general
-[Mainframe COBOL] → [Proxy/Sniffer] → [Extractor de reglas] → [Traductor a Python/Go] → [Shadow Mode] → [Conmutación gradual]
-↓ ↓ ↓ ↓
-[Respaldo en tiempo real] [Reglas validadas] [Código generado] [Módulo migrado]
-
-text
-
-**Todos los componentes corren dentro de la intranet del banco, sin acceso a internet.**
+**Nuestra solución:** Un protocolo incremental que combina análisis con IA local, extracción de reglas de negocio, traducción asistida y validación en shadow mode, permitiendo una conmutación gradual y segura.
 
 ---
 
-##  Componentes del sistema
+## Arquitectura general
 
-### 1. Modelos de IA locales (sin internet)
+Mainframe COBOL → Proxy/Sniffer → Extractor de reglas → Traductor asistido (Python/Go) → Shadow Mode → Conmutación gradual
 
-| Modelo | Función | Tamaño | Entrenamiento |
-|:---|:---|:---|:---|
-| `cobol-bert` | Extraer reglas de negocio, dependencias, flujos de datos. | 110M params | Fine-tuned desde CodeBERT con código COBOL etiquetado. |
-| `cobol2py` | Traducir sentencias COBOL a Python/Go. | 350M params | Fine-tuned desde CodeT5 con pares (COBOL, Python). |
-| `code-llama-7b` (cuantizado) | Validar equivalencia de salidas en shadow mode. | 7B params (4 bits) | Cuantizado para correr en CPU. |
 
-**Los modelos se entrenan fuera del banco (con datos públicos) y se instalan localmente en sus servidores.**
 
-### 2. Pipeline de modernización (8 fases)
+**Todo el proceso se ejecuta exclusivamente dentro de la intranet del banco**, sin conexión a internet.
 
-| Fase | Nombre | Qué hace | Automatización |
-|:---|:---|:---|:---|
-| 0 | Preparación | Instalar modelos y entorno en servidores del banco. | DevOps + Tú |
-| 1 | Escaneo inicial | Analizar todo el código COBOL del banco. | Automático |
-| 2 | Extracción de reglas | Generar grafo de dependencias y reglas de negocio. | Automático |
-| 3 | Validación humana | Programador veterano revisa y corrige reglas extraídas. | Humano (dashboard) |
-| 4 | Traducción automática | Generar código Python/Go desde reglas validadas. | Automático |
-| 5 | Shadow mode | Ejecutar código nuevo en paralelo, comparar salidas. | Automático |
-| 6 | Corrección humana | Revisar discrepancias, corregir código o modelo. | Humano + Automático |
-| 7 | Conmutación | Reemplazar COBOL por código nuevo (gradual). | Arquitecto del banco |
-| 8 | Mantenimiento continuo | Repetir ciclo para nuevos módulos o cambios en COBOL. | Automático + Humano |
+---
 
-### 3. Shadow mode (validación continua)
-Transacción real → [COBOL original] → Salida_COBOL
-→ [Código generado] → Salida_Python
-→ [Comparador] → ¿Coinciden?
-↓
-Sí: Registrar éxito
-No: Registrar error + guardar inputs/outputs
+## Componentes principales
 
-text
+### 1. Modelos de IA locales (offline)
 
-**El shadow mode corre en paralelo con el sistema real, sin afectar la producción.**
+| Modelo                        | Función principal                              | Tamaño aproximado      | Notas |
+|-------------------------------|------------------------------------------------|------------------------|-------|
+| `cobol-analyzer`              | Extracción de reglas de negocio y dependencias | ~110-350M parámetros   | Fine-tuned con código COBOL |
+| `cobol2modern`                | Traducción asistida a Python/Go                | ~350M-7B parámetros    | Cuantizado para ejecución en CPU/GPU local |
+| Validador de equivalencia     | Comparación de salidas en shadow mode          | Basado en LLMs locales | Enfoque en precisión |
+
+Los modelos se entrenan/preparan fuera del banco con datos públicos o anonimizados y se instalan localmente.
+
+### 2. Pipeline de modernización (fases)
+
+| Fase | Nombre                    | Descripción                                              | Responsable principal |
+|------|---------------------------|----------------------------------------------------------|-----------------------|
+| 0    | Preparación               | Instalación de modelos y entorno seguro                  | DevOps + Equipo banco |
+| 1    | Escaneo e inventario      | Análisis completo del codebase COBOL                     | Automático            |
+| 2    | Extracción de reglas      | Generación de grafo de dependencias y lógica de negocio  | Automático + IA       |
+| 3    | Validación humana         | Revisión por programadores veteranos                     | Humano (dashboard)    |
+| 4    | Traducción asistida       | Generación de código moderno limpio                      | Automático + IA       |
+| 5    | Shadow mode               | Ejecución paralela y comparación de resultados           | Automático            |
+| 6    | Corrección e iteración    | Ajuste de discrepancias                                  | Humano + IA           |
+| 7    | Conmutación gradual       | Reemplazo módulo por módulo                              | Arquitecto del banco  |
+| 8    | Mantenimiento continuo    | Monitoreo y actualización de módulos migrados            | Automático + Humano   |
+
+### 3. Shadow Mode (validación en paralelo)
+
+- Transacción real se procesa en el sistema COBOL original.
+- La misma transacción se ejecuta simultáneamente en el código moderno generado.
+- Se comparan las salidas automáticamente.
+- Las discrepancias se registran para revisión humana.
+- **No afecta la producción** en ninguna etapa.
 
 ### 4. Respaldo en tiempo real
+- Copia de transacciones críticas a base de datos moderna (ej. PostgreSQL + Kafka).
+- Soporte en caso de fallos del mainframe.
+- Modo solo lectura.
 
-- Cada transacción que pasa por el mainframe se copia a una base de datos moderna (PostgreSQL, Kafka, etc.).
-- Si el mainframe falla, los datos no se pierden.
-- El respaldo es **solo lectura** (no se escribe en el mainframe).
-
-### 5. Seguridad: Protocolo de acceso para técnicos externos
+### 5. Protocolo de seguridad para personal externo
 
 | Paso | Acción |
-|:---|:---|
-| 1 | El técnico llega al banco. |
-| 2 | Se identifica (cédula, credencial, código). |
-| 3 | Confirma su autorización en la lista de personal externo. |
-| 4 | Se activa el temporizador visitante (hora de inicio). |
-| 5 | Se entrega un sobre cerrado con las claves de administrador. |
-| 6 | El técnico trabaja (solo durante el horario autorizado). |
-| 7 | Al terminar, el temporizador se desactiva y las claves caducan. |
-| 8 | Al día siguiente, se repite el proceso con un nuevo sobre. |
-
-**El técnico nunca tiene acceso fuera de su horario. El banco nunca pierde el control.**
+|------|--------|
+| 1    | Identificación del técnico al llegar |
+| 2    | Verificación de autorización |
+| 3    | Activación de temporizador visitante |
+| 4    | Entrega de credenciales en sobre sellado |
+| 5    | Trabajo restringido al horario autorizado |
+| 6    | Caducidad automática de accesos al finalizar |
 
 ---
 
-## 🛠️ Implementación técnica (resumen)
+## Requisitos técnicos recomendados
 
-### Requisitos del banco (infraestructura)
+| Recurso          | Especificación recomendada                     | Uso |
+|------------------|------------------------------------------------|-----|
+| Servidores       | 2-4 servidores (16+ núcleos, 64-128 GB RAM)    | Ejecución de modelos y pipeline |
+| Almacenamiento   | 1-2 TB SSD                                     | Código fuente, modelos y logs |
+| Red              | Intranet aislada del banco                     | Todo el flujo |
+| GPU (opcional)   | 1x NVIDIA T4 o equivalente                     | Acelerar validaciones |
 
-| Recurso | Especificación | Uso |
-|:---|:---|:---|
-| Servidores (2-4) | CPU modernas (16+ núcleos), 64-128 GB RAM | Correr modelos y pipeline |
-| Almacenamiento | 1-2 TB SSD | Código COBOL, modelos, logs |
-| Red | Intranet del banco | Acceso a código y transacciones de prueba |
-| Opcional (pero recomendado) | 1 GPU (NVIDIA T4 o similar) | Acelerar shadow mode |
-
-### Instalación (una sola vez)
-
-```bash
-# Copiar modelos a los servidores (sin internet)
-scp ./cobol-bert-local user@server:/bank/models/
-scp ./cobol2py-local user@server:/bank/models/
-scp ./codellama-7b.Q4_K_M.gguf user@server:/bank/models/
-
-# Instalar dependencias (sin internet, usando paquetes locales)
-pip install --no-index --find-links ./offline-packages transformers torch
-
-# Configurar acceso al repositorio COBOL
-./setup.sh --cobol-path /bank/cobol/legacy --output /bank/output
-Uso diario (automático)
-bash
-# Escaneo nocturno (cron job)
-0 2 * * * /bank/scripts/scanner.sh --incremental
-
-# Shadow mode continuo (servicio)
-systemctl start shadow-mode.service
-
-# Dashboard de validación humana (acceso interno)
-https://bank-intranet/legacy-modernizer/dashboard
+---
 
 ## Licencia
 
 Copyright © 2026 Enrique Aguayo. Todos los derechos reservados.
 
-Este proyecto está protegido por derechos de autor.
+**Permitido:** Uso no comercial con fines educativos, de investigación o pruebas piloto internas.
 
-PERMITIDO:
-- Uso no comercial con fines educativos o de investigación.
-- Distribución sin modificación, siempre que se mantenga esta licencia y se dé crédito al autor.
+**Prohibido sin autorización expresa por escrito:** Uso comercial, implementación en producción, modificación para entornos productivos o distribución de versiones derivadas.
 
-PROHIBIDO sin autorización expresa por escrito:
-- Uso comercial (incluyendo, pero no limitado a: ofrecerlo como servicio, SaaS, suscripción, integración en productos que generen ingresos, o cualquier uso que genere beneficio económico directo o indirecto).
-- Modificación para entornos de producción.
-- Distribución de versiones modificadas sin autorización.
+Para licencias comerciales, soporte técnico o pilotos en bancos:  
+**Contacto:** eaguayo@migst.cl
 
-Para licencias comerciales, soporte técnico, pilotos empresariales o consultas:
-Contacto: eaguayo@migst.cl
-
-Cualquier uso fuera de los términos permitidos requiere permiso previo del autor.
-
-Las consultas comerciales son bienvenidas y se responderán en un plazo máximo de 7 días hábiles.
+---
 
 ## Autor
 
-Enrique Aguayo H.
-Mackiber Labs
+**Enrique Aguayo H.**  
+Mackiber Labs  
 Contacto: eaguayo@migst.cl
-ORCID: 0009-0004-4615-6825
-GitHub: @enriqueherbertag-lgtm
 
-Documentación asistida por Ana (DeepSeek), IA para investigación y optimización técnica.
-
+*Documentación asistida por DeepSeek (IA).*
