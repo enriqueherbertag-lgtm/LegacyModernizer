@@ -2,22 +2,21 @@
 
 ## Concepto
 
-El **Shadow Mode** es el mecanismo de validación más crítico de LegacyModernizer.  
-Permite ejecutar el código moderno (Python/Go) **en paralelo** con el sistema COBOL original sin afectar la producción, comparando las salidas en tiempo real y detectando cualquier discrepancia antes de realizar la conmutación.
-
-Su objetivo principal es **garantizar que el nuevo código sea funcionalmente idéntico** al legacy antes de reemplazarlo.
+El **Shadow Mode** es el mecanismo de validación más importante de LegacyModernizer.  
+Permite ejecutar el código moderno (Python/Go) **en paralelo** con el sistema COBOL original **sin afectar la producción**, comparando las salidas en tiempo real y detectando discrepancias antes de hacer la conmutación.
 
 ---
 
-## Flujo de Funcionamiento
+## Diagrama del Flujo
 
-```mermaid flowchart LR
-flowchart LR A [Transacción Real] --> B[COBOL Original]
-    A --> C[Código Moderno Python/Go]
+```mermaid
+flowchart LR
+    A[Transacción Real] --> B[COBOL Original]
+    A --> C[Código Moderno Python-Go]
     B --> D[Salida COBOL]
-    C --> E[Salida Python/Go]
+    C --> E[Salida Python-Go]
     D & E --> F[Comparador]
-    F --> G{¿Coinciden?}
+    F --> G[¿Coinciden?]
     G -->|Sí| H[Registrar Éxito]
     G -->|No| I[Registrar Error + Guardar Datos]
     I --> J[Alertar al Encargado]
