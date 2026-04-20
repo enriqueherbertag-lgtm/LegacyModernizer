@@ -4,6 +4,7 @@
 [![Seguridad](https://img.shields.io/badge/Seguridad-Acceso%20y%20Claves-blue)](./docs/seguridad.md)
 [![Shadow Mode](https://img.shields.io/badge/Validación-Shadow%20Mode-blue)](./docs/shadow_mode.md)
 [![Cláusula de Control Humano](https://img.shields.io/badge/Control%20Humano-No%20Caja%20Negra-red)](./docs/LEGACYMODERNIZER.md)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19656715.svg)](https://doi.org/10.5281/zenodo.19656715)
 
 # LegacyModernizer: Protocolo de modernización segura de sistemas COBOL en banca
 
